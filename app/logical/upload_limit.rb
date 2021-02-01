@@ -16,7 +16,8 @@ class UploadLimit
     if user.can_upload_free?
       false
     elsif user.created_at > 1.week.ago
-      true
+      false
+	  # true
     else
       used_upload_slots >= upload_slots
     end

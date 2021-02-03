@@ -9,7 +9,7 @@
 
 module SeoHelper
   def site_description
-    "#{Danbooru.config.canonical_app_name} is the original anime image booru. Search millions of anime pictures categorized by thousands of tags."
+    "#{Danbooru.config.canonical_app_name} is the original liberty meme booru. Search millions of dank ass maymays categorized by thousands of tags."
   end
 
   # https://developers.google.com/search/docs/data-types/video#video-object

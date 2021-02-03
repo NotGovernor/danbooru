@@ -93,7 +93,7 @@ class User < ApplicationRecord
   attribute :unread_dmail_count, default: 0
   attribute :favorite_count, default: 0
   attribute :per_page, default: 20
-  attribute :theme, default: :light
+  attribute :theme, default: :dark
   attribute :upload_points, default: 1000
   attribute :bit_prefs, default: 0
 

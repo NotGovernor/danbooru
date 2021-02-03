@@ -34,6 +34,8 @@ footer#page-footer {
   #sidebar {
     flex: 0;
     min-width: 20em;
+    padding-right: 1em;
+    border-right: 1px solid #DDD;
   }
 
   #content {

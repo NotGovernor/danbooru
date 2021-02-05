@@ -13,6 +13,7 @@ class TagMover
       move_aliases!
       move_implications!
       move_cosplay_tag!
+      move_style_tag!
       move_artist!
       move_wiki!
       move_saved_searches!
@@ -34,7 +35,9 @@ class TagMover
     return unless old_tag.artist? && old_artist.present? && !old_artist.is_deleted?
 
     if new_artist.nil?
-      old_artist.update!(name: new_tag.name)
+      old_artist.name = new_tag.name
+      old_artist.other_names += [old_tag.name]
+      old_artist.save!
     else
       merge_artists!
     end
@@ -81,6 +84,15 @@ class TagMover
 
     if Tag.nonempty.where(name: old_cosplay_tag).exists?
       TagMover.new(old_cosplay_tag, new_cosplay_tag).move!
+    end
+  end
+
+  def move_style_tag!
+    old_style_tag = "#{old_tag.name}_(style)"
+    new_style_tag = "#{new_tag.name}_(style)"
+
+    if old_tag.artist? && Tag.nonempty.exists?(name: old_style_tag)
+      TagMover.new(old_style_tag, new_style_tag).move!
     end
   end
 

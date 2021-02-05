@@ -62,6 +62,7 @@ class Post < ApplicationRecord
   scope :pending, -> { where(is_pending: true) }
   scope :flagged, -> { where(is_flagged: true) }
   scope :banned, -> { where(is_banned: true) }
+  # XXX conflict with deletable
   scope :active, -> { where(is_pending: false, is_deleted: false, is_flagged: false).where.not(id: PostAppeal.pending) }
   scope :appealed, -> { deleted.where(id: PostAppeal.pending.select(:post_id)) }
   scope :in_modqueue, -> { pending.or(flagged).or(appealed) }
@@ -472,8 +473,8 @@ class Post < ApplicationRecord
       normalized_tags = apply_casesensitive_metatags(normalized_tags)
       normalized_tags = normalized_tags.map(&:downcase)
       normalized_tags = filter_metatags(normalized_tags)
-      normalized_tags = remove_negated_tags(normalized_tags)
       normalized_tags = TagAlias.to_aliased(normalized_tags)
+      normalized_tags = remove_negated_tags(normalized_tags)
       normalized_tags = %w(tagme) if normalized_tags.empty?
       normalized_tags = add_automatic_tags(normalized_tags)
       normalized_tags = remove_invalid_tags(normalized_tags)
@@ -1389,7 +1390,7 @@ class Post < ApplicationRecord
     end
 
     def uploader_is_not_limited
-      errors.add(:uploader, uploader.upload_limit.limit_reason) if uploader.upload_limit.limited?
+      errors.add(:uploader, "have reached your upload limit") if uploader.upload_limit.limited?
     end
 
     def added_tags_are_valid

@@ -35,8 +35,10 @@ class ApplicationController < ActionController::Base
       return
     end
 
+    model = options[0]&.delete(:model)
     if subject.respond_to?(:includes) && (request.format.json? || request.format.xml?)
-      associations = ParameterBuilder.includes_parameters(params[:only], model_name)
+      model ||= model_name
+      associations = ParameterBuilder.includes_parameters(params[:only], model)
       subject = subject.includes(associations)
     end
 
@@ -120,7 +122,7 @@ class ApplicationController < ActionController::Base
     when PG::ConnectionBad
       render_error_page(503, exception, message: "The database is unavailable. Try again later.")
     else
-      raise exception if Danbooru.config.debug_mode
+      raise exception if !Rails.env.production? || Danbooru.config.debug_mode
       render_error_page(500, exception)
     end
   end
